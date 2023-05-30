@@ -6,9 +6,11 @@ package es.upm.IA_22_23.Practica;
  */
 public class App 
 {
-	private Perceptron2x1 P2x1;
+	private static Perceptron2x1 P2x1;
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        P2x1 = new Perceptron2x1();
+        P2x1.Propagacion();
+        P2x1.Retropropagacion();
     }
 }

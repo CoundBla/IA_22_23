@@ -11,9 +11,13 @@ public class Parametros {
 	public double AW211;
 	public double AW212;
 	public double AW221;
+	//Entrada 0
 	public double E0;
+	//Entrada 1
 	public double E1;
+	//Entrada 2
 	public double E2;
+	
 	public double Lambda11;
 	public double Lambda12;
 	public double Lambda21;
@@ -44,7 +48,20 @@ public class Parametros {
 	public double W221_prima;
 	
 	public void Inicializar() {
-		
+		E0 = 1.0;
+		E1 = 0.386124387383461;
+		E2 = 0.0957537812646478;
+		//Capa 1
+		W011 = 0.619945486541837;
+		W111 = 3.05990373715758;
+		W211 = -0.392925175838172;
+		W021 = 2.45627271244302;
+		W121 = 1.62006904603913;
+		W221 = -1.1863021692261;
+		//Capa 2
+		W012 = -1.69834141153842;
+		W112 = -2.02845993684605;
+		W212 = 1.75631897058338;		
 	}
 	
 	
