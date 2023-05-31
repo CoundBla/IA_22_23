@@ -1,98 +1,103 @@
 package es.upm.IA_22_23.Practica;
 
 public class Perceptron2x1 {
-	private double Alpha;
-	private Neurona N01;
-	private Neurona N02;
-	private Neurona N11;
-	private Parametros P;
-	private double SalidaDeseada;
-	
-	public Perceptron2x1() {
-		SalidaDeseada = 0.211208913475275;
-		Alpha = 0.324269810458645;
-		P = new Parametros();
-		P.Inicializar();
-	}
-	
-	public void Propagacion() {
-		double[] ent = new double[3];
-		double[] pes = new double[3];
-		ent[0] = P.E0;
-		ent[1] = P.E1;
-		ent[2] = P.E2;
-		pes[0] = P.W011;
-		pes[1] = P.W111;
-		pes[2] = P.W211;
-		//N01 = new Neurona(ent,pes);
-		N01 = new Neurona();
-		N01.CalcularSalida(ent,pes);
-		pes[0] = P.W021;
-		pes[1] = P.W121;
-		pes[2] = P.W221;
-		//N02 = new Neurona(ent,pes);
-		N02 = new Neurona();		
-		N02.CalcularSalida(ent,pes);
-		
-		ent[1] = N01.Salida;
-		ent[2] = N02.Salida;
-		pes[0] = P.W012;
-		pes[1] = P.W112;
-		pes[2] = P.W212;
-		//N11 = new Neurona(ent,pes);
-		N11 = new Neurona();
-		N11.CalcularSalida(ent,pes);
-	}
-	
-	public void Retropropagacion() {
-		double errorSalida = SalidaDeseada - N11.Salida;
+    private Parametros parametros;
+    private double salidaDeseada;
+    private Neurona N01;
+    private Neurona N02;
+    private Neurona N11;
 
-	    // 1. Nos aseguramos de que los AW estén a 0.0
-	    P.AW011 = 0.0;
-	    P.AW021 = 0.0;
-	    P.AW111 = 0.0;
-	    P.AW121 = 0.0;
-	    P.AW211 = 0.0;
-	    P.AW221 = 0.0;
-	    P.AW011 = 0.0;
-	    P.AW021 = 0.0;
-	    P.AW111 = 0.0;
-	    P.AW121 = 0.0;
-	    P.AW211 = 0.0;
-	    P.AW221 = 0.0;
+    public Perceptron2x1() {
+        parametros = new Parametros();
+        parametros.Inicializar();
+        salidaDeseada = 0.211208913475275;
+        N01 = new Neurona();
+        N02 = new Neurona();
+        N11 = new Neurona();
+    }
 
-	    // 2. Actualizar los pesos de la capa de salida
-	    P.AW011 += Alpha * errorSalida * N01.Salida;
-	    P.AW021 += Alpha * errorSalida * N02.Salida;
+    public void propagacion() {
+        double[] entradas = {parametros.E0, parametros.E1, parametros.E2};
+        double[] pesos;
 
-	    // 3. Retropropagar el error a las capas ocultas
-	    double errorOculta = N11.Salida * (1 - N11.Salida) * (P.W011 * errorSalida + P.W021 * errorSalida);
+        N01 = new Neurona();
+        pesos = new double[]{parametros.W011, parametros.W111, parametros.W211};
+        N01.CalcularSalida(entradas, pesos);
 
-	    P.AW111 += Alpha * errorOculta * N01.Salida;
-	    P.AW121 += Alpha * errorOculta * N02.Salida;
-	    P.AW211 += Alpha * errorOculta * N01.Salida;
-	    P.AW221 += Alpha * errorOculta * N02.Salida;
+        N02 = new Neurona();
+        pesos = new double[]{parametros.W021, parametros.W121, parametros.W221};
+        N02.CalcularSalida(entradas, pesos);
 
-	    // 4. Actualizar los pesos de la capa oculta
-	    P.AW011 += Alpha * errorOculta * P.E0;
-	    P.AW021 += Alpha * errorOculta * P.E0;
-	    P.AW111 += Alpha * errorOculta * P.E1;
-	    P.AW121 += Alpha * errorOculta * P.E1;
-	    P.AW211 += Alpha * errorOculta * P.E2;
-	    P.AW221 += Alpha * errorOculta * P.E2;
+        entradas[1] = N01.Salida;
+        entradas[2] = N02.Salida;
 
-	    // Actualizar los pesos
-	    P.W011 += P.AW011;
-	    P.W021 += P.AW021;
-	    P.W111 += P.AW111;
-	    P.W121 += P.AW121;
-	    P.W211 += P.AW211;
-	    P.W221 += P.AW221;
-	    P.W011 += P.AW011;
-	    P.W021 += P.AW021;
-	    P.W111 += P.AW111;
-	    P.W121 += P.AW121;
-	    P.W211 += P.AW211;
-	    P.W221 += P.AW221;
-	}
+        N11 = new Neurona();
+        pesos = new double[]{parametros.W012, parametros.W112, parametros.W212};
+        N11.CalcularSalida(entradas, pesos);
+
+        parametros.S01 = entradas[0];
+        parametros.S11 = N01.Salida;
+        parametros.S12 = N02.Salida;
+        parametros.S21 = N11.Salida;
+    }
+
+    public void retropropagacion() {
+        double errorSalida = salidaDeseada - parametros.S21;
+
+        // Reinicializar los AW a 0
+        parametros.AW011 = 0.0;
+        parametros.AW012 = 0.0;
+        parametros.AW021 = 0.0;
+        parametros.AW111 = 0.0;
+        parametros.AW112 = 0.0;
+        parametros.AW121 = 0.0;
+        parametros.AW211 = 0.0;
+        parametros.AW212 = 0.0;
+        parametros.AW221 = 0.0;
+
+        // Calcular los AW correspondientes
+        parametros.AW021 += parametros.alpha * errorSalida * parametros.S11;
+        parametros.AW121 += parametros.alpha * errorSalida * parametros.S12;
+
+        // Calcular el error de la capa oculta
+        double errorOculta = parametros.S11 * (1 - parametros.S11) * (parametros.W121 * errorSalida);
+
+        // Calcular los lambdas
+        parametros.Lambda11 = parametros.W111 * errorOculta;
+        parametros.Lambda12 = parametros.W121 * errorOculta;
+        parametros.Lambda21 = parametros.W211 * errorOculta;
+
+        // Actualizar los AW de la capa oculta
+        parametros.AW011 += parametros.alpha * errorOculta * parametros.S01;
+        parametros.AW111 += parametros.alpha * errorOculta * parametros.S11;
+        parametros.AW211 += parametros.alpha * errorOculta * parametros.S01;
+        parametros.AW121 += parametros.alpha * errorOculta * parametros.S12;
+
+        // Actualizar los AW de la capa de entrada
+        parametros.AW012 += parametros.alpha * parametros.Lambda12 * parametros.S01;
+        parametros.AW112 += parametros.alpha * parametros.Lambda11 * parametros.S11; // Corregido
+        parametros.AW212 += parametros.alpha * parametros.Lambda11 * parametros.S01;
+
+        // Actualizar los pesos con los AW calculados
+        parametros.W011 += parametros.AW011;
+        parametros.W012 += parametros.AW012;
+        parametros.W021 += parametros.AW021;
+        parametros.W111 += parametros.AW111;
+        parametros.W112 += parametros.AW112;
+        parametros.W121 += parametros.AW121;
+        parametros.W211 += parametros.AW211;
+        parametros.W212 += parametros.AW212;
+        parametros.W221 += parametros.AW221;
+
+        // Asignar los nuevos pesos a los correspondientes _prima
+        parametros.W011_prima = parametros.W011;
+        parametros.W012_prima = parametros.W012;
+        parametros.W021_prima = parametros.W021;
+        parametros.W111_prima = parametros.W111;
+        parametros.W112_prima = parametros.W112;
+        parametros.W121_prima = parametros.W121;
+        parametros.W211_prima = parametros.W211;
+        parametros.W212_prima = parametros.W212;
+        parametros.W221_prima = parametros.W221;
+    }
 }

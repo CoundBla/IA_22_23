@@ -10,7 +10,7 @@ public class App
     public static void main( String[] args )
     {
         P2x1 = new Perceptron2x1();
-        P2x1.Propagacion();
-        P2x1.Retropropagacion();
+        P2x1.propagacion();
+        P2x1.retropropagacion();
     }
 }
